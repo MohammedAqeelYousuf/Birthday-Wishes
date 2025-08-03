@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Birthday Surprise!</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0, #ffdde1);
+            background-size: 300% 300%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .screen {
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            text-align: center;
+        }
+
+        .gift-container {
+            cursor: pointer;
+        }
+
+        .gift-svg {
+            width: 150px;
+            height: auto;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15));
+        }
+
+        .gift-container p {
+            color: white;
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .glass-container h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3em;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        #name-input {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.2em;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.5);
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        #name-input:focus {
+            outline: none;
+            border-color: #fc5c7d;
+        }
+        
+        .error-message {
+            color: #c2185b;
+            font-weight: 500;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .submit-btn {
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 500;
+            padding: 12px 35px;
+            font-size: 1.1em;
+            background: linear-gradient(45deg, #fc5c7d, #6c5b7b);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            box-shadow: 0 5px 15px rgba(252, 92, 125, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(252, 92, 125, 0.6);
+        }
+
+        .heart, .star {
+            position: absolute;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart { animation: floatHeart linear forwards; }
+        .star {
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 1.5s infinite ease-in-out;
+        }
+
+        @keyframes floatHeart {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+            visibility: hidden;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="gift-screen" class="screen">
+        <div class="gift-container" id="gift-box">
+            <svg class="gift-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path fill="#d81b60" d="M256 448l-32-32-128-96v-128l160 96 160-96v128l-128 96-32 32z"/>
+                <path fill="#c2185b" d="M256 448l-32-32-128-96v-128l160 96v160z"/>
+                <path fill="#f48fb1" d="M256 192l160-96-160-64-160 64z"/>
+                <path fill="#f06292" d="M256 192L96 96l160-64v160z"/>
+                <path fill="#d81b60" d="M416 224v128l-128 96-32 32v-160l160-96z"/>
+                <path fill="#ffffff" d="M240 32h32v448h-32z"/>
+                <path fill="#ffffff" d="M32 208h448v32H32z"/>
+            </svg>
+            <p>Click the gift!</p>
+        </div>
+    </div>
+    
+    <div id="name-prompt-screen" class="screen hidden">
+        <div class="glass-container">
+            <h1>Who is the birthday star?</h1>
+            <input type="text" id="name-input" placeholder="Enter the special name...">
+            <button class="submit-btn" id="submit-name-btn">That's Me! ✨</button>
+            <p id="error-message" class="error-message">Sorry, that's not the right name! Try again.</p>
+        </div>
+    </div>
+
+    <script>
+        const heartEmojis = ['💗', '💝', '💕', '♥️', '✨', '🎉', '🎂'];
+        const totalStars = 200;
+
+        function createFloatingItem(className, innerHTML) {
+            const item = document.createElement('div');
+            item.classList.add(className);
+            item.style.left = Math.random() * 100 + 'vw';
+            item.style.animationDuration = Math.random() * 5 + 5 + 's';
+            item.innerHTML = innerHTML;
+            document.body.appendChild(item);
+            item.addEventListener('animationend', () => item.remove());
+        }
+
+        function generateBackgroundEffects() {
+            setInterval(() => createFloatingItem('heart', heartEmojis[Math.floor(Math.random() * heartEmojis.length)]), 600);
+            for (let i = 0; i < totalStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(star);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const giftScreen = document.getElementById('gift-screen');
+            const namePromptScreen = document.getElementById('name-prompt-screen');
+            const giftBox = document.getElementById('gift-box');
+            const submitBtn = document.getElementById('submit-name-btn');
+            const nameInput = document.getElementById('name-input');
+            const errorMessage = document.getElementById('error-message'); 
+
+            generateBackgroundEffects();
+
+            giftBox.addEventListener('click', () => {
+                giftScreen.classList.add('hidden');
+                namePromptScreen.classList.remove('hidden');
+            });
+
+            submitBtn.addEventListener('click', () => {
+                const validNames = ['menamma'];
+                
+                const enteredName = nameInput.value.trim();
+                
+                const lowerCaseName = enteredName.toLowerCase();
+
+                if (validNames.includes(lowerCaseName)) {
+                    errorMessage.style.display = 'none';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'landing.html?name=' + encodeURIComponent(enteredName);
+                    }, 500);
+
+                } else {
+                    errorMessage.style.display = 'block';
+                }
+            });
+        });
+        
+    </script>
+</body>
+</html>
