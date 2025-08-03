@@ -116,7 +116,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* --- CHANGE 1: Increased perspective to flatten the 3D effect --- */
             perspective: 3000px; 
         }
 
@@ -203,8 +202,38 @@
     <div class="gallery-container">
         <div class="gallery"></div>
     </div>
+    
+    <audio id="background-music" loop>
+        <source src="audio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('background-music');
+
+            const playAudio = () => {
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Autoplay was blocked. Waiting for user interaction.");
+                        const playOnInteraction = () => {
+                            audio.play();
+                            document.body.removeEventListener('click', playOnInteraction);
+                            document.body.removeEventListener('touchstart', playOnInteraction);
+                            document.body.removeEventListener('mousedown', playOnInteraction);
+                        };
+                        document.body.addEventListener('click', playOnInteraction);
+                        document.body.addEventListener('touchstart', playOnInteraction);
+                        document.body.addEventListener('mousedown', playOnInteraction);
+                    });
+                }
+            };
+            
+            playAudio();
+        });
+
+
         function createStars() {
             const starsContainer = document.querySelector('.stars');
             for (let i = 0; i < 200; i++) {
@@ -229,15 +258,14 @@
             let autoRotateInterval;
             let resumeTimeout;
 
-            // --- CHANGE 2: Increased radius values to make the circle wider ---
             function calculateRadius() {
                 const screenWidth = window.innerWidth;
                 if (screenWidth < 480) {
-                    return 500; // Radius for small phones
+                    return 500;
                 } else if (screenWidth < 768) {
-                    return 600; // Radius for tablets
+                    return 600;
                 } else {
-                    return 800; // Radius for desktops
+                    return 800;
                 }
             }
 
