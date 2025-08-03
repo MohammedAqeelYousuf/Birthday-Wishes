@@ -31,6 +31,9 @@
                 0 0 30px #ff69b4,
                 0 0 40px #ff1493;
             animation: pulse-glow 2.5s infinite ease-in-out;
+            width: 100%; 
+            padding: 0 20px;
+            box-sizing: border-box;
         }
 
         @keyframes pulse-glow {
@@ -46,7 +49,21 @@
 
         @media (max-width: 768px) {
             .birthday-message {
-                font-size: 2rem;
+                font-size: 2.5rem;
+            }
+            .gallery, .card {
+                width: 240px;
+                height: 320px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .birthday-message {
+                font-size: 1.8rem;
+            }
+            .gallery, .card {
+                width: 200px;
+                height: 280px;
             }
         }
 
@@ -99,7 +116,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 2000px;
+            /* --- CHANGE 1: Increased perspective to flatten the 3D effect --- */
+            perspective: 3000px; 
         }
 
         .gallery {
@@ -114,9 +132,7 @@
             position: absolute;
             width: 300px;
             height: 400px;
-            background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            backdrop-filter: blur(5px);
             border: 2px solid rgba(255, 192, 203, 0.3);
             transition: all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
             cursor: pointer;
@@ -125,46 +141,15 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .card::before {
+        .card::before, .card::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%);
-            z-index: 2;
-            transition: opacity 0.3s;
-        }
-
-        .card::after {
-            content: '';
-            position: absolute;
-            top: -100%;
-            left: -100%;
-            right: -100%;
-            bottom: -100%;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
         }
 
         .card.active {
             transform: scale(1.2) translateZ(200px);
             box-shadow: 0 20px 60px rgba(255, 192, 203, 0.4);
             border: 2px solid rgba(255, 255, 255, 0.8);
-        }
-
-        .card.active::after {
-            opacity: 0.1;
-        }
-
-        @media (max-width: 768px) {
-            .gallery, .card {
-                width: 240px;
-                height: 320px;
-            }
         }
 
         .card img {
@@ -237,13 +222,26 @@
         function createGallery() {
             const gallery = document.querySelector('.gallery');
             const totalCards = 11;
-            let radius = window.innerWidth < 768 ? 400 : 600;
             let currentAngle = 0;
             let isDragging = false;
             let startX = 0;
             let currentX = 0;
             let autoRotateInterval;
             let resumeTimeout;
+
+            // --- CHANGE 2: Increased radius values to make the circle wider ---
+            function calculateRadius() {
+                const screenWidth = window.innerWidth;
+                if (screenWidth < 480) {
+                    return 500; // Radius for small phones
+                } else if (screenWidth < 768) {
+                    return 600; // Radius for tablets
+                } else {
+                    return 800; // Radius for desktops
+                }
+            }
+
+            let radius = calculateRadius();
             
             const imageUrls = [
                 'photo 1.jpg', 'photo 2.jpg', 'photo 3.jpg', 'photo 4.jpg', 'photo 5.jpg',
@@ -280,7 +278,7 @@
                     const angle = (currentAngle + (index * (360 / totalCards))) * (Math.PI / 180);
                     const x = Math.sin(angle) * radius;
                     const z = Math.cos(angle) * radius;
-                    const rotateY = (currentAngle + (index * (360 / totalCards))) * -1; // Make cards face forward
+                    const rotateY = (currentAngle + (index * (360 / totalCards))) * -1;
                     
                     card.style.transform = `translate3d(${x}px, 0, ${z}px) rotateY(${rotateY}deg)`;
                     
@@ -290,12 +288,8 @@
                     } else {
                         card.classList.remove('active');
                     }
-
-                    const opacity = Math.max(0.2, 1 - Math.abs(normalizedAngle - 180) / 180);
-                    card.style.opacity = opacity;
                 });
             }
-
 
             function onDragStart(e) {
                 isDragging = true;
@@ -326,7 +320,6 @@
             gallery.addEventListener('mousedown', onDragStart);
             window.addEventListener('mousemove', onDragMove);
             window.addEventListener('mouseup', onDragEnd);
-
             gallery.addEventListener('touchstart', onDragStart, { passive: false });
             window.addEventListener('touchmove', onDragMove, { passive: false });
             window.addEventListener('touchend', onDragEnd);
@@ -339,14 +332,14 @@
             });
 
             window.addEventListener('resize', () => {
-                radius = window.innerWidth < 768 ? 400 : 600;
+                radius = calculateRadius();
                 updateCards();
             });
-
             
             updateCards();
             startAutoRotate();
         }
+
         createStars();
         createGallery();
     </script>
